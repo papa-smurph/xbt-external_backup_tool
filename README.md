@@ -1,3 +1,16 @@
+Note from papa-smurphy
+In this fork I am aiming to improve XBT by adding support for more distros and by adding addtional features.
+Currently I am adding support for distributions that use /run/media instead of /media.
+
+The future features that I would like to add are:
+ - support for file & directory exclusion
+ - a mode in which xbt holds a backup for a single system that can be restored to any computer regardless of its hostname.
+
+
+
+
+
+
 # xbt-external_backup_tool
 XBT -- External Backup Tool (Version 3.0)
 
