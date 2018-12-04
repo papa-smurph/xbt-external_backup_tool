@@ -1,4 +1,5 @@
 Note from papa-smurphy
+
 In this fork I am aiming to improve XBT by adding support for more distros and by adding addtional features.
 Currently I am adding support for distributions that use /run/media instead of /media.
 
