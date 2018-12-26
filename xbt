@@ -100,19 +100,27 @@ if [ "$?" != "0" ]; then
     fi
 fi
 
+
+
+
 #get exclusions
 pushd /home/
 for dir in */; do
+	#get contents of each .xbt file and parse it into an array
 	tmparray=( $(sudo cat "$dir$exclude_file") )
 	
 	#parse tmparray contents into exclusions array
 		for exclude in "${tmparray[@]}"; do 
+			#Add exclusion int othe exclusions array in the format of --exclude=user/exclude
 			exclusions+=("$exclude_command$dir$exclude")
 		done
 done
 popd
 
 
+
+
+#back up home directory with exclusions
 echo $'\n'$"Backing up /home..."
 sudo rsync -aHv --delete --progress "${exclusions[@]}" /home/ \
 $run/media/$user/XBT_Drive/XBT_Backups/$host/Home_Backup/ 2>> /tmp/backup.log
