@@ -1,16 +1,27 @@
 Note from papa-smurph
 
 In this fork I am aiming to improve XBT by adding support for more distros and by adding addtional features.
-Currently I am adding support for distributions that use /run/media instead of /media.
+So far I have added:
+- Support for distributions that use /run/media instead of /media.
+- Execptions for backups and restores
 
-The future features that I would like to add are:
- - support for file & directory exclusion
+Future features I would like to add
  - a mode in which xbt holds a backup for a single system that can be restored to any computer regardless of its hostname.
+ - Settings to ignore execptions
+ 
+How to use the exepctions
+Execptions are stores are in a file called .xbt in the home directory of each user. Any files or directory listed in this file will be excluded if they are within the home directory.
 
+For example:
+If the file /home/user/.xbt contains
 
+exclude
+exclude2/file.txt
 
+Then the file/folder /home/user/exclude/ and /home/user/exclude2/file.txt with be excluded from the backup and restore functions.
 
-
+Execptions and Restoring
+When XBT restores it will exclude the files and folder listed in the .xbt file of the current home directory NOT the .xbt file within the XBT_Drive
 
 # xbt-external_backup_tool
 XBT -- External Backup Tool (Version 3.0)
