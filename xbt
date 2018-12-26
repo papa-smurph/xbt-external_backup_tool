@@ -1,4 +1,4 @@
-!/bin/bash
+#! /bin/bash
 
 # XBT -- External Backup Tool (v. 3.0) -- by Joe Collins. (www.ezeelinux.com)
 # ...Special Thanks to Jeremy O'Connell and Jody James. (February 18th, 2017)
@@ -22,6 +22,10 @@
 user=$USER
 
 host=$HOSTNAME
+
+exclude_command="--exclude="
+
+exclude_file=".xbt"
 
 # Check if machine uses /media or /run/media
 if [ -d "/run/media" ]; then
@@ -96,15 +100,28 @@ if [ "$?" != "0" ]; then
     fi
 fi
 
+#get exclusions
+pushd /home/
+for dir in */; do
+	tmparray=( $(sudo cat "$dir$exclude_file") )
+	
+	#parse tmparray contents into exclusions array
+		for exclude in "${tmparray[@]}"; do 
+			exclusions+=("$exclude_command$dir$exclude")
+		done
+done
+popd
+
+
 echo $'\n'$"Backing up /home..."
-sudo rsync -aHv --delete --progress /home/ \
+sudo rsync -aHv --delete --progress "${exclusions[@]}" /home/ \
 $run/media/$user/XBT_Drive/XBT_Backups/$host/Home_Backup/ 2>> /tmp/backup.log
 
 # Checking status of rsync exit code:
 
 if [ "$?" != "0" ]; then
     echo "Starting second pass for /home..." | tee -a /tmp/backup.log
-    sudo rsync -aHv --delete --progress /home/ \
+    sudo rsync -aHv --delete --progress "${exclusions[@]}" /home/ \
     $run/media/$user/XBT_Drive/XBT_Backups/$host/Home_Backup/ 2>> /tmp/backup.log
 fi
 
