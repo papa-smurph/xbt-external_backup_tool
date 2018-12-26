@@ -259,7 +259,21 @@ read -n 1 -s choice
         echo "Close any running applications and press any key to continue."
         read -n 1 -s
         echo $'\n'$"Restoring /home... Please DO NOT open any applications."
-        sudo rsync -aHv --delete --progress \
+	
+	#get exclusions
+	pushd /home/
+	for dir in */; do
+		#get contents of each .xbt file and parse it into an array
+		tmparray=( $(sudo cat "$dir$exclude_file") )
+	
+		#parse tmparray contents into exclusions array
+		for exclude in "${tmparray[@]}"; do 
+			#Add exclusion int othe exclusions array in the format of --exclude=user/exclude
+			exclusions+=("$exclude_command$dir$exclude")
+		done
+	done
+	popd
+        sudo rsync -aHv --delete --progress  "${exclusions[@]}" \
         $run/media/$user/XBT_Drive/XBT_Backups/$host/Home_Backup/ \
         /home/
 
