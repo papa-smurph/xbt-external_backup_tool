@@ -1,0 +1,59 @@
+#! /bin/bash
+
+#set static variables
+exclude_file=".xbt"
+user=$USER
+
+#move into users home directory
+cd
+
+# Process input into string
+exception=${1##*/home/$user/}
+#remove " from the end
+exception=${exception%\"}
+echo "$exception"
+
+# Check if exception already exists
+# Loop though exception file line by line
+while read line
+do
+	echo "$line"
+	
+	# Check if line being read matchs the input exception
+	if  [ "$line" == "$exception" ]; then
+		exists="yes"
+		
+		# Create diaglog
+		if zenity --question \
+		--title="Remove exception?" \
+		--text="Exception Already exists.\nDo you wish to remove it?" 
+		then
+			
+			# Remove the exception and exit if answer is yes
+			echo "removing $exception from the list of exceptions"
+			sed -i /$exception/d "$exclude_file"
+			exit
+
+		else
+			# Exit script if the answer is no
+			echo "No was answered"
+			exit
+		fi
+	fi
+	
+done < "$exclude_file"
+	
+# If the script has not exited at this point then the exception does not exist and will be added
+# Create Dialog
+if zenity --question \
+	--title="Add exception?" \
+	--text="Do you wish to add $execption to the list of exceptions" 
+	then 
+		
+		# Add exception if answer is yes
+		echo "adding $exclude_file to the list of exceptions"
+		echo "$exception" >> "$exclude_file"
+	else 
+		echo "no was answered"
+fi
+

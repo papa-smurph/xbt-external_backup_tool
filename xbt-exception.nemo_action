@@ -1,0 +1,8 @@
+[Nemo Action]
+Name=Exclude from backup
+Comment=Exclude form xbt backup
+Quote=double
+Exec=<xbt-exception-nemo '%F'>
+#Icon-Name=
+Selection=NotNone
+Extensions=any;
