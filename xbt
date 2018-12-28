@@ -113,10 +113,10 @@ for dir in */; do
 	file_length=( $(sudo wc "$dir$exclude_file") )
 	
 	# Loop though the file
-	for line_number in $(seq 1 $file_length); do
+	for line_number in $(sudo seq 1 $file_length); do
 	
 	# Read line
-	exclude+=( \'$(sed "${line_number}q;d" "$dir$exclude_file")\' )
+	exclude+=( \'$(sudo sed "${line_number}q;d" "$dir$exclude_file")\' )
 	# If line is blank skip to next line
 	if [  ! ${#exclude[@]} -eq 0 ]; then
 	
@@ -278,10 +278,10 @@ read -n 1 -s choice
 		file_length=( $(sudo wc "$dir$exclude_file") )
 	
 		# Loop though the file
-		for line_number in $(seq 1 $file_length); do
+		for line_number in $(sudo seq 1 $file_length); do
 	
 		# Read line
-		exclude+=( \'$(sed "${line_number}q;d" "$dir$exclude_file")\' )
+		exclude+=( \'$(sudo sed "${line_number}q;d" "$dir$exclude_file")\' )
 		# If line is blank skip to next line
 		if [  ! ${#exclude[@]} -eq 0 ]; then
 	
