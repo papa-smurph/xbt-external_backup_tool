@@ -108,6 +108,9 @@ pushd /home/
 
 # Loop though each home directory
 for dir in */; do
+
+	# Remove blank lines
+	sudo sed -i '/^$/d' "$dir$exclude_file"
 	
 	# Get the length of the file
 	file_length=( $(sudo wc "$dir$exclude_file") )
@@ -273,6 +276,9 @@ read -n 1 -s choice
 
 	# Loop though each home directory
 	for dir in */; do
+		
+		# Remove blank lines
+		sudo sed -i '/^$/d' "$dir$exclude_file"
 	
 		# Get the length of the file
 		file_length=( $(sudo wc "$dir$exclude_file") )
