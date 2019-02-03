@@ -25,7 +25,11 @@ host=$HOSTNAME
 
 exclude_command="--exclude="
 
-exclude_file=".xbt"
+exclude_file="./config/xbt/execptions"
+
+
+
+
 
 # Check if machine uses /media or /run/media
 if [ -d "/run/media" ]; then
