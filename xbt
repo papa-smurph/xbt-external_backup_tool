@@ -25,7 +25,9 @@ host=$HOSTNAME
 
 exclude_command="--exclude="
 
-exclude_file="./config/xbt/execptions"
+exclude_file=".config/xbt/exceptions"
+
+exceptions_enabled=true
 
 
 
@@ -104,35 +106,8 @@ if [ "$?" != "0" ]; then
     fi
 fi
 
-
-
-
-#get exclusions
-pushd /home/
-
-# Loop though each home directory
-for dir in */; do
-
-	# Remove blank lines
-	sudo sed -i '/^$/d' "$dir$exclude_file"
-	
-	# Get the length of the file
-	file_length=( $(sudo wc "$dir$exclude_file") )
-	
-	# Loop though the file
-	for line_number in $(sudo seq 1 $file_length); do
-	
-	# Read line
-	exclude+=( \'$(sudo sed "${line_number}q;d" "$dir$exclude_file")\' )
-	# If line is blank skip to next line
-	if [  ! ${#exclude[@]} -eq 0 ]; then
-	
-		# Add exclusion to the exclusions array
-		exclusions+=("$exclude_command$dir$(sed "${line_number}q;d" "$dir$exclude_file")")
-	fi
-	done
-done
-popd
+# Get exclusions
+get_exclusions
 
 #back up home directory with exclusions
 echo $'\n'$"Backing up /home..."
@@ -275,32 +250,9 @@ read -n 1 -s choice
         echo $'\n'$"Restoring /home... Please DO NOT open any applications."
 	
 	
-	# Get exclusions
-	pushd /home/
-
-	# Loop though each home directory
-	for dir in */; do
+		# Get exclusions
+		get_exclusions
 		
-		# Remove blank lines
-		sudo sed -i '/^$/d' "$dir$exclude_file"
-	
-		# Get the length of the file
-		file_length=( $(sudo wc "$dir$exclude_file") )
-	
-		# Loop though the file
-		for line_number in $(sudo seq 1 $file_length); do
-	
-		# Read line
-		exclude+=( \'$(sudo sed "${line_number}q;d" "$dir$exclude_file")\' )
-		# If line is blank skip to next line
-		if [  ! ${#exclude[@]} -eq 0 ]; then
-	
-			# Add exclusion to the exclusions array
-			exclusions+=("$exclude_command$dir$(sed "${line_number}q;d" "$dir$exclude_file")")
-		fi
-		done
-	done
-	popd
 		echo "${exclusions[@]}"
 		sleep 15
         sudo rsync -aHv --delete --progress  "${exclusions[@]}" \
@@ -368,6 +320,57 @@ fi
 clear
 greeting
 
+}
+
+get_exclusions(){
+
+# Check if exceptions are enabled
+if [ "$exceptions_enabled" == true ]; then
+
+# Empty exceptions array
+unset exclusions[*]
+
+<<comment
+Exceptions are read from each exception file manuall rather than useing
+the rsync --exclude-from argument for security and saftey and simplicty
+reasons.
+
+To use the --exclude-from argument one of two things would have to
+happen:
+
+1. Each exception file would need to include the username of the user in
+it. (user/file inside of just file)
+This can cause issues as files could be excluded from outside of the 
+respective home folder. It is also confusing for the end user.
+
+2.multible rsyncs whould have to be used. One for each user.
+This could cause the code to become more complex than if the file was
+read manually.
+comment
+
+
+# Loop though each home directory
+for dir in /home/*/; do
+	
+	# Get the length of the file
+	file_length=( $(sudo wc "$dir$exclude_file") )
+	
+	# Loop though the file
+	for line_number in $(sudo seq 1 $file_length); do
+	
+	# Read line
+	exclude=( \'$(sudo sed -n "${line_number}p" "$dir$exclude_file")\')
+	
+	# If line is blank (length of 0) skip to next line
+	if [ ${#exclude} != 2 ]; then
+		# Add exclusion to the exclusions array
+		exclusions+=("$exclude_command$dir$(sed "${line_number}q;d" "$dir$exclude_file")")
+	fi
+	done
+	
+done
+fi
+#exit
 }
 
 setup_drive() {
@@ -547,6 +550,7 @@ Press the number of your choice:
     4 - Get some help.
     5 - View backup log. ('q' exits.)
     6 - Refresh USB Status.
+    7 - Advanced
     0 - Exit XBT.
 _EOF_
 
@@ -573,7 +577,6 @@ else
 
 fi
 
-
 # Hide the cursor.
 
 tput civis
@@ -588,10 +591,58 @@ read -n 1 -s choice;
 			4) help;;
             5) log;;
             6) clear;echo $'\n'$"Refreshing USB Status...";sleep 2;clear;greeting;;
+            7) advanced;;
             0) clear;echo $'\n'$"Exiting XBT... Goodbye!";sleep 2;tput cnorm;exit;;
             *) echo "Not a valid choice: Please try again.";sleep 2;clear;greeting;;
 	esac
 
+}
+
+advanced(){
+#
+if [ "$exceptions_enabled" == true ]; then
+	exceptions_advanced="Disable"
+else
+	exceptions_advanced="Enable"
+fi
+	clear
+	cat << _EOF_
+XBT -- External Backup Tool (Version 3.0)
+Advanced Settings: 
+Press the number of your choice:
+    1 - $exceptions_advanced execptions
+    2 - Use/remove hostname alias
+    0 - Return to main menu
+_EOF_
+
+# Hide the cursor.
+
+tput civis
+
+# Wait for user to make a choice and run chosen fucntions:
+echo $host
+read -n 1 -s choice;
+	case $choice in
+		# If input is 1, then use and if statement to switch the
+		# Exceptions_enabled variable
+		1) if [ "$exceptions_enabled" == true ];then
+			exceptions_enabled=false
+			else
+			exceptions_enabled=true
+			fi
+			advanced;;
+		2) 	clear
+			echo "Enter alias hostname. (leave blank to disable it)"
+			read alias_hostname
+			if [ ${#alias_hostname} != 0 ];then
+				host=$alias_hostname
+			else
+				host=$HOSTNAME
+			fi
+			advanced;;
+		0) clear;greeting;;
+		*) echo "Not a valid choice: Please try again.";sleep 2;clear;advanced;;
+	esac
 }
 
 help() {
