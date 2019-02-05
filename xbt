@@ -253,8 +253,6 @@ read -n 1 -s choice
 		# Get exclusions
 		get_exclusions
 		
-		echo "${exclusions[@]}"
-		sleep 15
         sudo rsync -aHv --delete --progress  "${exclusions[@]}" \
         $run/media/$user/XBT_Drive/XBT_Backups/$host/Home_Backup/ \
         /home/
