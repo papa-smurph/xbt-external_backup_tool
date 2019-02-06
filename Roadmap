@@ -5,3 +5,7 @@ Features added and not yet stable
 - Exclusions
 Features to be added in the future
 - Support form multialbe backups based on time
+- Add notifications for when advanced settings are being used.
+
+Other todo
+- Use only exceptions or exclusions instead of both.
