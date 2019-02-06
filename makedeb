@@ -1,27 +1,38 @@
 #!/bin/bash
+# Set static variables
 tmp_folder=.tmppackage
+
+# Remove temp folder to prevent errors
 rm -r $tmp_folder
+
+# Create the temp folder
 mkdir $tmp_folder
 
+# Create the folder for the package itself and copy the debian folder into it
 mkdir $tmp_folder/xbt
 cp -r DEBIAN $tmp_folder/xbt
 
+# Create more folders
 mkdir $tmp_folder/xbt/usr
 mkdir $tmp_folder/xbt/usr/share
 
+# Create bin folder and copy over the main file
 mkdir $tmp_folder/xbt/usr/bin
 cp xbt $tmp_folder/xbt/usr/bin
 
-# 
-
+# Do the same for the desktop
 mkdir $tmp_folder/xbt/usr/share/applications
 cp xbt-icon.xpm $tmp_folder/xbt/usr/share/applications
 
+
+# Do the same for the iconS
 mkdir $tmp_folder/xbt/usr/share/icons
 cp xbt.desktop $tmp_folder/xbt/usr/share/icons
 
-
+# Build the package itself
 dpkg --build $tmp_folder/xbt
+
+
 cp $tmp_folder/xbt.deb xbt.deb
 rm -r $tmp_folder
 
