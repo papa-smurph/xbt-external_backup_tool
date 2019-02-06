@@ -29,8 +29,7 @@ exclude_file=".config/xbt/exceptions"
 
 exceptions_enabled=true
 
-
-
+advanced_settings_used=flase
 
 
 # Check if machine uses /media or /run/media
@@ -107,9 +106,11 @@ if [ "$?" != "0" ]; then
 fi
 
 # Get exclusions
+
 get_exclusions
 
 #back up home directory with exclusions
+
 echo $'\n'$"Backing up /home..."
 sudo rsync -aHv --delete --progress "${exclusions[@]}" /home/ \
 $run/media/$user/XBT_Drive/XBT_Backups/$host/Home_Backup/ 2>> /tmp/backup.log
@@ -236,8 +237,24 @@ if [ ! -d $run/media/$user/XBT_Drive/XBT_Backups/$host/ ]; then
 
 fi
 
-echo $'\n'$"WARNING!"$
+echo $'\n'$"WARNING!"
 echo $'\n'$"Any new files created in /home since last backup WILL BE DELETED!"
+# Notify user Of advanced settings if they are being used
+if [ $advanced_settings_used == true ]; then
+	echo "Notice: advanced settings have been set"
+	if [ exceptions_enabled == true ]; then
+		echo "Exceptions are enabled"
+	else
+		echo "Exceptions are disabled"
+	fi
+	if [ $host != $HOSTNAME ]; then
+		echo "$Hostname alias set to $host"
+	else
+		echo "No hostname alias set"
+	fi
+	echo $'\n'
+fi
+
 echo "Are you sure you want to restore now? [y/N]"
 read -n 1 -s choice
 
@@ -575,6 +592,22 @@ else
 
 fi
 
+# Check if advanced settings have been set
+
+if [ $advanced_settings_used == true ]; then
+	echo $'\n'"Advanced settings have been set"
+	if [ exceptions_enabled == true ]; then
+		echo "Exceptions are enabled"
+	else
+		echo "Exceptions are disabled"
+	fi
+	if [ $host != $HOSTNAME ]; then
+		echo "$Hostname alias set to $host"
+	else
+		echo "No hostname alias set"
+	fi
+fi
+
 # Hide the cursor.
 
 tput civis
@@ -623,13 +656,15 @@ read -n 1 -s choice;
 	case $choice in
 		# If input is 1, then use and if statement to switch the
 		# Exceptions_enabled variable
-		1) if [ "$exceptions_enabled" == true ];then
+		1)  advanced_settings_used=true
+			if [ "$exceptions_enabled" == true ];then
 			exceptions_enabled=false
 			else
 			exceptions_enabled=true
 			fi
 			advanced;;
-		2) 	clear
+		2)	advanced_settings_used=true
+		 	clear
 			echo "Enter alias hostname. (leave blank to disable it)"
 			read alias_hostname
 			if [ ${#alias_hostname} != 0 ];then
