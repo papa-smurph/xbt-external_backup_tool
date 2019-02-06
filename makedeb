@@ -22,12 +22,12 @@ cp xbt $tmp_folder/xbt/usr/bin
 
 # Do the same for the desktop
 mkdir $tmp_folder/xbt/usr/share/applications
-cp xbt-icon.xpm $tmp_folder/xbt/usr/share/applications
+cp xbt-icon.xpm $tmp_folder/xbt/usr/share/icons
 
 
 # Do the same for the iconS
 mkdir $tmp_folder/xbt/usr/share/icons
-cp xbt.desktop $tmp_folder/xbt/usr/share/icons
+cp xbt.desktop $tmp_folder/xbt/usr/share/applications
 
 # Build the package itself
 dpkg --build $tmp_folder/xbt
