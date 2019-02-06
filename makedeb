@@ -20,13 +20,13 @@ mkdir $tmp_folder/xbt/usr/share
 mkdir $tmp_folder/xbt/usr/bin
 cp xbt $tmp_folder/xbt/usr/bin
 
-# Do the same for the desktop
-mkdir $tmp_folder/xbt/usr/share/applications
+# Do the same for the icon
+mkdir $tmp_folder/xbt/usr/share/icons
 cp xbt-icon.xpm $tmp_folder/xbt/usr/share/icons
 
 
-# Do the same for the iconS
-mkdir $tmp_folder/xbt/usr/share/icons
+# Do the same for the desktop
+mkdir $tmp_folder/xbt/usr/share/applications
 cp xbt.desktop $tmp_folder/xbt/usr/share/applications
 
 # Build the package itself
