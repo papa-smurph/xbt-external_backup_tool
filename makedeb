@@ -1,0 +1,27 @@
+#!/bin/bash
+tmp_folder=.tmppackage
+rm -r $tmp_folder
+mkdir $tmp_folder
+
+mkdir $tmp_folder/xbt
+cp -r DEBIAN $tmp_folder/xbt
+
+mkdir $tmp_folder/xbt/usr
+mkdir $tmp_folder/xbt/usr/share
+
+mkdir $tmp_folder/xbt/usr/bin
+cp xbt $tmp_folder/xbt/usr/bin
+
+# 
+
+mkdir $tmp_folder/xbt/usr/share/applications
+cp xbt-icon.xpm $tmp_folder/xbt/usr/share/applications
+
+mkdir $tmp_folder/xbt/usr/share/icons
+cp xbt.desktop $tmp_folder/xbt/usr/share/icons
+
+
+dpkg --build $tmp_folder/xbt
+cp $tmp_folder/xbt.deb xbt.deb
+rm -r $tmp_folder
+
