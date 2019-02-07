@@ -265,11 +265,11 @@ read -n 1 -s choice
         echo "Close any running applications and press any key to continue."
         read -n 1 -s
         echo $'\n'$"Restoring /home... Please DO NOT open any applications."
-	
-	
+
+
 		# Get exclusions
 		get_exclusions
-		
+
         sudo rsync -aHv --delete --progress  "${exclusions[@]}" \
         $run/media/$user/XBT_Drive/XBT_Backups/$host/Home_Backup/ \
         /home/
@@ -355,7 +355,7 @@ happen:
 
 1. Each exception file would need to include the username of the user in
 it. (user/file inside of just file)
-This can cause issues as files could be excluded from outside of the 
+This can cause issues as files could be excluded from outside of the
 respective home folder. It is also confusing for the end user.
 
 2.multible rsyncs whould have to be used. One for each user.
@@ -363,29 +363,29 @@ This could cause the code to become more complex than if the file was
 read manually.
 comment
 
-
+pushd /home
 # Loop though each home directory
-for dir in /home/*/; do
-	
+for dir in */; do
+
 	# Get the length of the file
 	file_length=( $(sudo wc "$dir$exclude_file") )
-	
+
 	# Loop though the file
 	for line_number in $(sudo seq 1 $file_length); do
-	
+
 	# Read line
 	exclude=( \'$(sudo sed -n "${line_number}p" "$dir$exclude_file")\')
-	
+
 	# If line is blank (length of 0) skip to next line
 	if [ ${#exclude} != 2 ]; then
 		# Add exclusion to the exclusions array
 		exclusions+=("$exclude_command$dir$(sed "${line_number}q;d" "$dir$exclude_file")")
 	fi
 	done
-	
+
 done
 fi
-#exit
+popd
 }
 
 setup_drive() {
@@ -414,13 +414,13 @@ XBT Drive Setup
  You must create an XBT Drive before you can use XBT.
  You can use any USB storage device for your XBT Drive. It should have enough
  storage capacity to hold all of the data in the /home directories of all the
- machines you'd like to make backups from. This tool works with USB storage 
- devices with under 2 TB of total data capacity. Lager drives will have to be 
- formatted manually. XBT Drive Setup will format and label a drive for use with 
+ machines you'd like to make backups from. This tool works with USB storage
+ devices with under 2 TB of total data capacity. Lager drives will have to be
+ formatted manually. XBT Drive Setup will format and label a drive for use with
  XBT. The partition will be labeled "XBT_Drive" so the program can find it.
  The drive MUST be formatted with a native Linux file system such as Ext4
  or XFS for the backups to retain the correct permissions. You must run XBT
- Backup to set the correct ownership permissions for you new XBT Drive. 
+ Backup to set the correct ownership permissions for you new XBT Drive.
   *************************************************************************
   * WARNING: XBT Drive Setup will clear ALL DATA on the USB drive chosen! *
   *************************************************************************
@@ -639,7 +639,7 @@ fi
 	clear
 	cat << _EOF_
 XBT -- External Backup Tool (Version 3.0)
-Advanced Settings: 
+Advanced Settings:
 Press the number of your choice:
     1 - $exceptions_advanced execptions
     2 - Use/remove hostname alias
@@ -799,17 +799,17 @@ if [ "$1" == "--help" ]; then
 fi
 
 if [ "$1" == "--log" ]; then
-	mode=CLI	
+	mode=CLI
 	log
 fi
 
 if [ "$1" == "--backup" ]; then
-	mode=CLI	
+	mode=CLI
 	backup
 fi
 
 if [ "$1" == "--restore" ]; then
-	mode=CLI	
+	mode=CLI
 	restore
 fi
 
