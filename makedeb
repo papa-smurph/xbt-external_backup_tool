@@ -2,6 +2,10 @@
 # Set static variables
 tmp_folder=.tmppackage
 
+
+# Remove existing .deb package
+rm xbt.deb
+
 # Remove temp folder to prevent errors
 rm -r $tmp_folder
 
@@ -35,4 +39,3 @@ dpkg --build $tmp_folder/xbt
 
 cp $tmp_folder/xbt.deb xbt.deb
 rm -r $tmp_folder
-
