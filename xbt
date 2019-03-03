@@ -180,6 +180,12 @@ else
     echo "Wait! Syncing drives..."
     sync
     echo "...Done."
+    
+    # Exit if running from command line:
+    if [ "$mode" == "CLI" ]; then
+		exit 1
+	fi
+	
     greeting
 
 fi
