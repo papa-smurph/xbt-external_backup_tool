@@ -300,7 +300,7 @@ read -n 1 -s choice
 
             else
 
-                # Returning to Main Menu if rsync fails:
+                # Returning to Main Menu or exit if rsync fails:
 
                 # Clear any accidental input during restore:
 
@@ -314,6 +314,12 @@ read -n 1 -s choice
                 echo "    Remount XBT Drive USB by unplugging it and plugging it back in."
                 echo $'\n'$"Wait a few seconds and try running XBT Restore again."
                 echo "You may need to manually restore your data if errors persist."
+                
+                # Exit with error code 1 if running from command line
+                
+                if [ "$mode" == "CLI" ]; then
+					exit 1
+                fi
                 greeting
 
             fi
