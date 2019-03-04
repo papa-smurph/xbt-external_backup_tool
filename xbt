@@ -153,7 +153,8 @@ if [ "$?" == "0" ]; then
     cat /tmp/backup.log >> $run/media/$user/XBT_Drive/XBT_Backups/xbt-backup.log
 
 else
-
+	
+	rsync_error="$?"
     # Alert user there were some errors and return to Main Menu:
 
     # Clear any accidental input during backup:
@@ -197,11 +198,10 @@ sync
 echo "..Done."
 echo "It's now safe to remove XBT_Drive."
 
-# Exit if running from command line:
-
+# Exit with code of the rsync exit code
+                
 if [ "$mode" == "CLI" ]; then
-	echo "Exiting XBT.. Goodbye!"
-	exit
+	exit $rsync_error
 fi
 
 greeting
@@ -283,6 +283,7 @@ read -n 1 -s choice
             # Checking status of rsync exit code:
 
             if [ "$?" == "0" ]; then
+            
 
                 # Prompt user to restart machine and exit:
 
@@ -307,7 +308,7 @@ read -n 1 -s choice
             else
 
                 # Returning to Main Menu or exit if rsync fails:
-
+				rsync_error="$?"
                 # Clear any accidental input during restore:
 
                 read -t 1 -n 10000 discard
@@ -321,10 +322,10 @@ read -n 1 -s choice
                 echo $'\n'$"Wait a few seconds and try running XBT Restore again."
                 echo "You may need to manually restore your data if errors persist."
                 
-                # Exit with error code 1 if running from command line
+                # Exit with code of the rsync exit code
                 
                 if [ "$mode" == "CLI" ]; then
-					exit 1
+					exit $rsync_error
                 fi
                 greeting
 
