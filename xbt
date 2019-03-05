@@ -46,13 +46,24 @@ backup() {
 # Checking for valid media:
 
 if [ ! -d $run/media/$user/XBT_Drive ]; then
-
-    clear
-    echo $'\n'$"XBT Backup"
+	
+	# Clear screen if not running from CLI
+	
+	if [ "$mode" != "CLI" ];then
+		clear
+	fi
+ 
+    echo $"XBT Backup"
     echo "XBT Error: NO XBT DRIVE FOUND! Please make sure XBT_Drive USB is connected."
 	echo "If you just set up the XBT Drive, remove it and plug it back in."
-    greeting
-
+    
+	
+	# Exit if running from CLI
+	if [ "$mode" == "CLI" ]; then
+		exit 23
+	fi
+	
+	greeting
 fi
 
 # Checking for sudo permissions:
@@ -219,6 +230,13 @@ if [ ! -d $run/media/$user/XBT_Drive ]; then
     clear
 	echo $'\n'$"XBT Restore"
     echo "XBT Error: NO XBT DRIVE FOUND! Please make sure XBT_Drive USB is connected."
+    
+    # Exit if running from CLI
+    
+	if [ "$mode" == "CLI" ]; then
+		exit 1
+	fi
+	
     greeting
 
 fi
@@ -827,9 +845,8 @@ if [ "$1" == "--restore" ]; then
 fi
 
 if  [ -n "$1"  ]; then
-    echo "XBT Error: Invalid argument. Exiting to Main Menu."
-    sleep 3
-    greeting
+    echo "XBT Error: Invalid argument"
+    exit 1
 fi
 
 # Greeting user and offering Main Menu:
