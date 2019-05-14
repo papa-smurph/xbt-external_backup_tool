@@ -46,24 +46,7 @@ backup() {
 # Checking for valid media:
 
 if [ ! -d $run/media/$user/XBT_Drive ]; then
-	
-	# Clear screen if not running from CLI
-	
-	if [ "$mode" != "CLI" ];then
-		clear
-	fi
- 
-    echo $"XBT Backup"
-    echo "XBT Error: NO XBT DRIVE FOUND! Please make sure XBT_Drive USB is connected."
-	echo "If you just set up the XBT Drive, remove it and plug it back in."
-    
-	
-	# Exit if running from CLI
-	if [ "$mode" == "CLI" ]; then
-		exit 23
-	fi
-	
-	greeting
+	fail no_drive_found	
 fi
 
 # Checking for sudo permissions:
@@ -818,6 +801,29 @@ fi
 
 greeting
 
+}
+
+
+fail() {
+case "$1" in
+	no_drive_found)	
+	
+		# Clear screen if not running from CLI
+	
+	if [ "$mode" != "CLI" ];then
+		clear
+	fi
+ 
+    	echo "XBT Error: NO XBT DRIVE FOUND! Please make sure XBT_Drive USB is connected."
+	echo "If you just set up the XBT Drive, remove it and plug it back in."
+	
+	# Exit if running from CLI
+	if [ "$mode" == "CLI" ]; then
+		exit 23
+	fi
+	greeting	
+esac
+exit 5
 }
 
 # Execution Section
