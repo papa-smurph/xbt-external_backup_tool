@@ -6,10 +6,10 @@ Features added and not yet stable
 - Exclusions
 - Add notifications for when advanced settings are being used.
 Features to be added in the future
+- Add config file for each XBT_Drive
 - Support form multialbe backups based on time
 - Add and remove exceptions function
 - Improve handling of arguments to allow for multiable arguments
 
 Other todo
 - Use only exceptions or exclusions instead of both.
-

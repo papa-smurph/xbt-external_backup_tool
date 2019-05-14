@@ -46,13 +46,24 @@ backup() {
 # Checking for valid media:
 
 if [ ! -d $run/media/$user/XBT_Drive ]; then
-
-    clear
-    echo $'\n'$"XBT Backup"
+	
+	# Clear screen if not running from CLI
+	
+	if [ "$mode" != "CLI" ];then
+		clear
+	fi
+ 
+    echo $"XBT Backup"
     echo "XBT Error: NO XBT DRIVE FOUND! Please make sure XBT_Drive USB is connected."
 	echo "If you just set up the XBT Drive, remove it and plug it back in."
-    greeting
-
+    
+	
+	# Exit if running from CLI
+	if [ "$mode" == "CLI" ]; then
+		exit 23
+	fi
+	
+	greeting
 fi
 
 # Checking for sudo permissions:
@@ -153,7 +164,8 @@ if [ "$?" == "0" ]; then
     cat /tmp/backup.log >> $run/media/$user/XBT_Drive/XBT_Backups/xbt-backup.log
 
 else
-
+	
+	rsync_error="$?"
     # Alert user there were some errors and return to Main Menu:
 
     # Clear any accidental input during backup:
@@ -180,6 +192,12 @@ else
     echo "Wait! Syncing drives..."
     sync
     echo "...Done."
+    
+    # Exit if running from command line:
+    if [ "$mode" == "CLI" ]; then
+		exit 1
+	fi
+	
     greeting
 
 fi
@@ -191,11 +209,10 @@ sync
 echo "..Done."
 echo "It's now safe to remove XBT_Drive."
 
-# Exit if running from command line:
-
+# Exit with code of the rsync exit code
+                
 if [ "$mode" == "CLI" ]; then
-	echo "Exiting XBT.. Goodbye!"
-	exit
+	exit $rsync_error
 fi
 
 greeting
@@ -213,6 +230,13 @@ if [ ! -d $run/media/$user/XBT_Drive ]; then
     clear
 	echo $'\n'$"XBT Restore"
     echo "XBT Error: NO XBT DRIVE FOUND! Please make sure XBT_Drive USB is connected."
+    
+    # Exit if running from CLI
+    
+	if [ "$mode" == "CLI" ]; then
+		exit 1
+	fi
+	
     greeting
 
 fi
@@ -277,6 +301,7 @@ read -n 1 -s choice
             # Checking status of rsync exit code:
 
             if [ "$?" == "0" ]; then
+            
 
                 # Prompt user to restart machine and exit:
 
@@ -300,8 +325,8 @@ read -n 1 -s choice
 
             else
 
-                # Returning to Main Menu if rsync fails:
-
+                # Returning to Main Menu or exit if rsync fails:
+				rsync_error="$?"
                 # Clear any accidental input during restore:
 
                 read -t 1 -n 10000 discard
@@ -314,6 +339,12 @@ read -n 1 -s choice
                 echo "    Remount XBT Drive USB by unplugging it and plugging it back in."
                 echo $'\n'$"Wait a few seconds and try running XBT Restore again."
                 echo "You may need to manually restore your data if errors persist."
+                
+                # Exit with code of the rsync exit code
+                
+                if [ "$mode" == "CLI" ]; then
+					exit $rsync_error
+                fi
                 greeting
 
             fi
@@ -814,9 +845,8 @@ if [ "$1" == "--restore" ]; then
 fi
 
 if  [ -n "$1"  ]; then
-    echo "XBT Error: Invalid argument. Exiting to Main Menu."
-    sleep 3
-    greeting
+    echo "XBT Error: Invalid argument"
+    exit 1
 fi
 
 # Greeting user and offering Main Menu:
