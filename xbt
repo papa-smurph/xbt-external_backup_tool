@@ -209,19 +209,8 @@ restore() {
 # Checking for valid media:
 
 if [ ! -d $run/media/$user/XBT_Drive ]; then
-
-    clear
-	echo $'\n'$"XBT Restore"
-    echo "XBT Error: NO XBT DRIVE FOUND! Please make sure XBT_Drive USB is connected."
-    
-    # Exit if running from CLI
-    
-	if [ "$mode" == "CLI" ]; then
-		exit 1
-	fi
 	
-    greeting
-
+	fail no_drive_found
 fi
 
 # Checking for sudo permissions
