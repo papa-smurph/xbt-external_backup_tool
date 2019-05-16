@@ -847,6 +847,11 @@ if [ "$1" == "--restore" ]; then
 	restore
 fi
 
+if [ "$1" == "--setup" ]; then
+	mode=CLI
+	setup_drive
+	
+fi
 if  [ -n "$1"  ]; then
 	fail invalid_argument
 fi
