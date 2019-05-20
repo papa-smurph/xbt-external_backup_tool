@@ -331,13 +331,7 @@ read -n 1 -s choice
 
 # Exit if running from command line:
 
-if [ "$mode" == "CLI" ]; then
-	exit
-fi
-
-clear
-greeting
-
+action_complete
 }
 
 get_exclusions(){
@@ -749,13 +743,7 @@ _EOF_
 
 # Exit if running from command line:
 
-if [ "$mode" == "CLI" ]; then
-	exit
-fi
-
-clear
-greeting
-
+action_complete
 }
 
 log() {
@@ -783,13 +771,17 @@ less +G $run/media/$user/XBT_Drive/XBT_Backups/xbt-backup.log
 clear
 
 # Exit if running from command line:
+action_complete
+
+}
+
+action_complete() {
 
 if [ "$mode" == "CLI" ]; then
 	exit
 fi
 
 greeting
-
 }
 
 
