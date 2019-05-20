@@ -31,7 +31,6 @@ exceptions_enabled=true
 
 advanced_settings_used=flase
 
-
 # Check if machine uses /media or /run/media
 if [ -d "/run/media" ]; then
 	run=/run
@@ -332,6 +331,16 @@ read -n 1 -s choice
 # Exit if running from command line:
 
 action_complete
+}
+
+find_drive_location(){
+if( "$user" == "root"); then
+	return "$(find $run/media/ -maxdepth 2 -mindepth 2 -name XBT_Drive -type d)"
+
+else
+	return "$(find $run/media/$user -maxdepth 1 -name XBT_Drive -type d)"
+
+fi
 }
 
 get_exclusions(){
